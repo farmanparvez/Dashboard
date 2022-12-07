@@ -1,0 +1,11 @@
+.main{
+    display: flex;
+}
+.sidebar{
+    min-width: 350px;
+}
+.content{
+    width: 100%;
+    height: 100vh;
+    background: whitesmoke;
+}
