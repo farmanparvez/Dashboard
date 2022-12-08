@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
 import Home from "./Components/Home"
+import Homepage from "./Components/Homepage"
 
 function App() {
   const { isLogedIn, hello, login } = useContext(AuthContext);
@@ -18,7 +19,7 @@ function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<Home/>} />
+        <Route path="/" element={<Homepage/>} />
         <Route path="/dish/:id" element={<Home/>} />
       </Routes>
       <ToastContainer />
