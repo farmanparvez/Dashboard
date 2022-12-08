@@ -8,32 +8,35 @@ import Divider from "@mui/material/Divider";
 import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import Search from "./Search";
+// import Search from "./Search";
 import CreateDishModal from "../Components/Model/CreateDishModal";
 import { toast } from "react-toastify";
 import { axiosRequest } from "../utils/request";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Link, useNavigate, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { url } from "../utils/url";
-import Pagination from '@mui/material/Pagination';
+import Pagination from "@mui/material/Pagination";
+import TextField from "@mui/material/TextField";
 
 export default function BasicList() {
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [data, setData] = React.useState([]);
-  const [pagination, setPagination] = React.useState({ page: 1, limit: 6});
-  const navigate = useNavigate()
-  const count = Math.round(data?.count/6)
+  const [pagination, setPagination] = React.useState({ page: 1, limit: 6 });
+  const count = Math.round(data?.count / 6);
 
   React.useEffect(() => {
     handleGetDish(pagination);
-    return setPagination({ page: 1, limit: 6})
+    return setPagination({ page: 1, limit: 6 });
   }, []);
 
   const handleGetDish = async (pagination) => {
     try {
       setIsLoading(true);
-      const res = await axiosRequest(`${url}api/dish?page=${pagination?.page}&limit=${pagination?.limit}`, "get");
+      const res = await axiosRequest(
+        `${url}api/dish?page=${pagination?.page}&limit=${pagination?.limit}`,
+        "get"
+      );
       setData(res);
     } catch (error) {
       const message =
@@ -46,7 +49,10 @@ export default function BasicList() {
   const handleGetDishBySearch = async (pagination, search) => {
     try {
       setIsLoading(true);
-      const res = await axiosRequest(`${url}api/dish/${search}?page=${pagination?.page}&limit=${pagination?.limit}`, "get");
+      const res = await axiosRequest(
+        `${url}api/dish/${search}?page=${pagination?.page}&limit=${pagination?.limit}`,
+        "post"
+      );
       setData(res);
     } catch (error) {
       const message =
@@ -56,10 +62,29 @@ export default function BasicList() {
     setIsLoading(false);
   };
 
-  function handlePagination(_,page) {
-    setPagination({ page, limit: 6 })
+  function handlePagination(_, page) {
+    setPagination({ page, limit: 6 });
     handleGetDish({ page, limit: 6 });
   }
+
+  function handleSearch(e) {
+    console.log(e.target.value);
+    setTimeout(() => {
+      handleGetDishBySearch(pagination, e.target.value);
+    },1000)
+  }
+
+  function callSearch(e) {
+    console.log(e.target.value);
+    handleSearch()
+  }
+
+  // React.useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //       handleSearch()
+  //   },1000)
+  //   return clearTimeout(timer)
+  // },[])
 
   return (
     <>
@@ -87,7 +112,14 @@ export default function BasicList() {
           >
             Create
           </Button>
-          <Search  handleGetDishBySearch={handleGetDishBySearch} pagination={pagination} />
+              <TextField
+                onChange={handleSearch}
+                fullWidth
+                label="Search"
+                id="fullWidth"
+                style={{ marginTop: '20px'}}
+                size='medium'
+              />
         </Grid>
         <Divider />
         <nav aria-label="secondary mailbox folders">
@@ -100,23 +132,48 @@ export default function BasicList() {
             <List>
               {isLoading && <CircularProgress />}
               {!isLoading &&
+                data?.data?.length > 0 &&
                 data?.data?.map((res) => (
                   <ListItem key={res._id} disablePadding>
-                  <NavLink to={`dish/${res._id}`} style={({isActive}) => { return {background : isActive ? 'rgb(176 174 174)' : '', width: '300px', textAlign:'center'}}}>
-                    <ListItemButton style={{ textAlign:'center' }} >
-                      <ListItemText primary={res.dishName} />
-                    </ListItemButton>
-                  </NavLink>
+                    <NavLink
+                      to={`dish/${res._id}`}
+                      style={({ isActive }) => {
+                        return {
+                          background: isActive ? "rgb(176 174 174)" : "",
+                          width: "300px",
+                          textAlign: "center",
+                        };
+                      }}
+                    >
+                      <ListItemButton style={{ textAlign: "center" }}>
+                        <ListItemText primary={res.dishName} />
+                      </ListItemButton>
+                    </NavLink>
                   </ListItem>
                 ))}
+              {!isLoading && data?.data?.length === 0 && (
+                <div> No item found </div>
+              )}
             </List>
           </Grid>
         </nav>
       </Box>
-      <div >
-        <Pagination onChange={handlePagination} count={count && count || 1} variant="outlined" shape="rounded" />
+      <div>
+        <Pagination
+          onChange={handlePagination}
+          count={(count && count) || 1}
+          variant="outlined"
+          shape="rounded"
+        />
       </div>
-      {open && <CreateDishModal open={open} setOpen={setOpen} handleGetDish={handleGetDish} pagination={pagination} />}
+      {open && (
+        <CreateDishModal
+          open={open}
+          setOpen={setOpen}
+          handleGetDish={handleGetDish}
+          pagination={pagination}
+        />
+      )}
     </>
   );
 }

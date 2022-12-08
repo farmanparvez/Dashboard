@@ -55,14 +55,14 @@ exports.getDish = async (req, res) => {
 
 exports.getDishBySearch = async (req, res) => {
   try {
-    // console.log(req.query)
+    // console.log(req.params.id)
     const page = req.query.page * 1 || 1
     const limit = req.query.limit * 1 || 6
 
     const skip = (page - 1) * limit
 
     const dishes = await Dish.find();
-    const dish = await Dish.find().skip(skip).limit(limit);
+    const dish = await Dish.find({ dishName: req.params.id }).skip(skip).limit(limit);
     res.status(200).json({
       status: "success",
       message: "Data fetch successfully",
