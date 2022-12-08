@@ -24,7 +24,7 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({ open, setOpen, handleGetDish }) {
+export default function BasicModal({ open, setOpen, handleGetDish, pagination }) {
   const [isLoading, setIsLoading] = React.useState(false);
   const dishRef = useRef();
   //   console.log(dishRef?.current?.value);
@@ -35,7 +35,7 @@ export default function BasicModal({ open, setOpen, handleGetDish }) {
       const res = await axiosRequest(`${url}api/dish`, "post", {
         dishName: dishRef?.current?.value,
       });
-      handleGetDish()
+      handleGetDish(pagination)
       toast(res.message);
       setOpen(false);
     } catch (error) {

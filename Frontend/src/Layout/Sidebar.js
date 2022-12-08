@@ -15,22 +15,26 @@ import { axiosRequest } from "../utils/request";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Link, useNavigate } from "react-router-dom";
 import { url } from "../utils/url";
+import Pagination from '@mui/material/Pagination';
 
 export default function BasicList() {
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [pagination, setPagination] = React.useState({ page: 1, limit: 6});
   const navigate = useNavigate()
-
+  const count = Math.round(data?.count/6)
+console.log(count)
   React.useEffect(() => {
-    handleGetDish();
+    handleGetDish(pagination);
+    return setPagination({ page: 1, limit: 6})
   }, []);
 
-  const handleGetDish = async () => {
+  const handleGetDish = async (pagination) => {
     try {
       setIsLoading(true);
-      const res = await axiosRequest(`${url}api/dish`, "get");
-      setData(res.data);
+      const res = await axiosRequest(`${url}api/dish?page=${pagination?.page}&limit=${pagination?.limit}`, "get");
+      setData(res);
     } catch (error) {
       const message =
         error?.response?.data?.message || error?.message || error.toString();
@@ -38,9 +42,11 @@ export default function BasicList() {
     }
     setIsLoading(false);
   };
-  // function handleClick(id) {
-  //   navigate('dish/' + id)
-  // }
+  function handlePagination(_,page) {
+    console.log(page)
+    setPagination({ page, limit: 6 })
+    handleGetDish({ page, limit: 6 });
+  }
 
   return (
     <>
@@ -48,7 +54,7 @@ export default function BasicList() {
         sx={{
           width: "100%",
           maxWidth: 360,
-          minHeight: 100,
+          minHeight: "92vh",
           bgcolor: "background.paper",
         }}
       >
@@ -81,7 +87,7 @@ export default function BasicList() {
             <List>
               {isLoading && <CircularProgress />}
               {!isLoading &&
-                data?.map((res) => (
+                data?.data?.map((res) => (
                   <ListItem key={res._id} disablePadding>
                   <Link to={`dish/${res._id}`}>
                     <ListItemButton >
@@ -94,7 +100,10 @@ export default function BasicList() {
           </Grid>
         </nav>
       </Box>
-      {open && <CreateDishModal open={open} setOpen={setOpen} handleGetDish={handleGetDish} />}
+      <div >
+        <Pagination onChange={handlePagination} count={count && count || 1} variant="outlined" shape="rounded" />
+      </div>
+      {open && <CreateDishModal open={open} setOpen={setOpen} handleGetDish={handleGetDish} pagination={pagination} />}
     </>
   );
 }
