@@ -18,7 +18,8 @@ function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="dish/:id" element={<Home/>} />
+        <Route path="/" element={<Home/>} />
+        <Route path="/dish/:id" element={<Home/>} />
       </Routes>
       <ToastContainer />
     </Layout>
