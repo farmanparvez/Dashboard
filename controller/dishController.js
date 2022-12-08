@@ -44,3 +44,20 @@ exports.getDish = async (req, res) => {
     });
   }
 };
+
+
+exports.getDishById = async (req, res) => {
+  try {
+    const dish = await Dish.findById(req.params.id);
+    res.status(200).json({
+      status: "success",
+      message: "Data fetch successfully",
+      data: dish,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "failed",
+      message: "Server error",
+    });
+  }
+};

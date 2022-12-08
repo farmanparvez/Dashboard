@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { axiosRequest } from "../utils/request";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Link, useNavigate } from "react-router-dom";
+import { url } from "../utils/url";
 
 export default function BasicList() {
   const [open, setOpen] = React.useState(false);
@@ -28,7 +29,7 @@ export default function BasicList() {
   const handleGetDish = async () => {
     try {
       setIsLoading(true);
-      const res = await axiosRequest("api/dish", "get");
+      const res = await axiosRequest(`${url}api/dish`, "get");
       setData(res.data);
     } catch (error) {
       const message =

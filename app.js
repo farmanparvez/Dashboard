@@ -2,9 +2,11 @@ const path = require("path");
 const express = require('express')
 const app = express()
 const dishRouter = require('./Routes/dishRouter')
+const ingredentRouter = require('./Routes/ingredent')
 
 app.use(express.json())
 app.use('/api', dishRouter)
+app.use('/api', ingredentRouter)
 // app.all("*", (req, res, next) => {
 //     new Error (`can't find ${req.originalUrl} on this server`)
 

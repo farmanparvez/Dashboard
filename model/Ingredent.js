@@ -1,10 +1,10 @@
 const mongoose = require('mongoose')
 
 const distSchema = new mongoose.Schema({
-    disName: {
+    dishId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: [true, "Dist id is required"],
-        ref: Dish
+        required: [true, "Dish id is required"],
+        ref: 'Dish'
     },
     ingredent: {
         type: String,

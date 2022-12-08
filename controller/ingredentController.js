@@ -2,23 +2,23 @@ const Ingredent = require("../model/Ingredent");
 
 exports.createIngredent = async (req, res) => {
   try {
-    const { ingredent } = req.body;
+    const { ingredent, dishId } = req.body;
     if (!ingredent)
       return res.status(400).json({
         status: "failed",
-        message: "Dish name is required",
+        message: "Ingredent name is required",
       });
     const ingred = await Ingredent.findOne({ ingredent });
     if (ingred)
       return res.status(400).json({
         status: "failed",
-        message: "Dish already exits",
+        message: "Ingredent already exits",
       });
-    await Ingredent.create({ ingredent });
+    await Ingredent.create({ ingredent, dishId });
 
     res
       .status(200)
-      .json({ status: "success", message: "Dish is create successfully" });
+      .json({ status: "success", message: "Ingredent is create successfully" });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -30,13 +30,15 @@ exports.createIngredent = async (req, res) => {
 
 exports.getIngredent = async (req, res) => {
   try {
-    const ingredent = await Ingredent.find();
+    const ingredent = await Ingredent.find({ dishId: req.params.id});
     res.status(200).json({
       status: "success",
       message: "Data fetch successfully",
       data: ingredent,
     });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       status: "failed",
       message: "Server error",
