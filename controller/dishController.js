@@ -53,6 +53,30 @@ exports.getDish = async (req, res) => {
   }
 };
 
+exports.getDishBySearch = async (req, res) => {
+  try {
+    // console.log(req.query)
+    const page = req.query.page * 1 || 1
+    const limit = req.query.limit * 1 || 6
+
+    const skip = (page - 1) * limit
+
+    const dishes = await Dish.find();
+    const dish = await Dish.find().skip(skip).limit(limit);
+    res.status(200).json({
+      status: "success",
+      message: "Data fetch successfully",
+      data: dish,
+      count: dishes?.length
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "failed",
+      message: "Server error",
+    });
+  }
+};
+
 
 exports.getDishById = async (req, res) => {
   try {

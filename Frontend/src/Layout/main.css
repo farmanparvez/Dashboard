@@ -9,3 +9,6 @@
     height: 100vh;
     background: whitesmoke;
 }
+.isActive{
+    background-color: #555;
+}
